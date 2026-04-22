@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tradingview": {
+      "command": "node",
+      "args": ["/Users/miguelmont/Documents/ClaudeProjects/tvmcpserver/tradingview-mcp/src/server.js"]
+    }
+  }
+}

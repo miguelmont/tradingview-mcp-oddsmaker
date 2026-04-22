@@ -1,0 +1,9 @@
+.env
+.env.local
+*.log
+screenshots/
+.claude/
+tradingview-mcp/
+__pycache__/
+*.pyc
+/tmp/
