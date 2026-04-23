@@ -157,8 +157,10 @@ Every candidate that passes structural validation must also pass these runtime g
 ### Lunch-hour block — 11:00 to 13:00 NY
 All new entries between **11:00 NY and 13:00 NY** (inclusive-start, exclusive-end) are **skipped entirely**. This is a chop-filter: midday range-bound action generates low-quality CHoCHs. Applies to all setups and all grades. Trades already open at 11:00 NY continue to be managed — only *new* entries are blocked.
 
-### Massive contra-delta auto-skip
-When the LTF Big Beluga CHoCH has **|delta| ≥ 2000 contradicting** the intended trade direction (LONG + δ ≤ −2K · SHORT + δ ≥ +2K), the setup is auto-skipped with a single-line `SKIP[massive_contra_delta]`. Rationale: a 2K+ institutional print against the direction is a direct flow disconfirmation that overrides the structural signal.
+### Massive contra-delta — grade cap B (not skip)
+When the LTF Big Beluga CHoCH has **|delta| ≥ 2000 contradicting** the intended trade direction (LONG + δ ≤ −2K · SHORT + δ ≥ +2K), the setup is **still evaluable** if all other structural conditions are aligned (HTF, LTF band at sweep, sweep real, intact target, RR ≥ 1). The grade is **capped at Grade B maximum** regardless of otherwise-qualifying structure (A+ → B, A → B, B → B). Sub-B setups (already-C) stay C.
+
+Rationale: a 2K+ contradicting institutional print is a strong quality warning but does not invalidate a structurally clean setup. User directive 2026-04-23 supersedes prior "auto-skip" rule.
 
 ### Daily loss circuit-breaker — 3 consecutive SLs
 If **3 trades in the current session hit their hard SL consecutively** (no winners in between), stop firing for the remainder of that session. Manage any still-open trade to completion, but do not open new positions until next session. Resets at the next 08:30 CT session open.

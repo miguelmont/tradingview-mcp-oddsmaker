@@ -1,15 +1,29 @@
 ---
-name: Auto-skip setups with massive contradicting delta
-description: During Recon Live/Backtesting, if a CHoCH prints with delta contradicting the implied trade direction AND |delta| ≥ 2K, skip immediately — do NOT pause the Monitor for a full analysis.
+name: Massive contra-delta degrades grade to B max — NOT auto-skip
+description: When a CHoCH prints with |delta|≥2K contradicting the intended trade direction, the setup is NOT invalidated. If every other structural condition is aligned (HTF bias, sweep real, LTF band, intact targets), the setup is still valid but grade is capped at B maximum.
 type: feedback
 originSessionId: 747c8a93-a06c-4aa4-9ebb-20aa3b523114
 ---
-If a Recon tick surfaces a CHoCH where `delta_contradicting_choch` warning is present AND `|delta_value| ≥ 2000`, skip the setup immediately without stopping the Monitor or writing full analysis. Emit a one-line "skip: massive contra-delta" and keep iterating.
+User directive 2026-04-23 (corrects earlier memo): "un delta masivo en contra si todo lo demas esta alineado no invalida el setup solo degrada su calidad pero sigue siendo B maximo".
 
-**Why:** on 2026-04-22 a replay tick at 09:42 showed CHoCH bull@26820.25 δ-6.165K (LONG with -6.165K = massive contradicting). I stopped the Monitor to do full setup validation. During the ~20 seconds of analysis, the Monitor backlog piled up past a CLEAN Setup 1 at 10:00 (CHoCH bull@26836 δ+2.993K aligned, LTF +1.10σ within borderline). The clean setup's entry window escaped to +1.65σ before I saw it. The contradicting-delta setup I was analyzing would have been Grade B at best with degraded Kelly — not worth sacrificing a Grade A/B cleaner one.
+**Rule:**
+- If |delta_value| ≥ 2000 **contradicting** the trade direction:
+  - **Do NOT skip**. Evaluate the full setup.
+  - Cap grade at **Grade B maximum** regardless of other quality factors.
+- If |delta_value| < 2000 contradicting → normal grade-degrade (A+ → A, A → B, B → C) per strategy spec.
+- If delta is aligned → grade may be boosted (|δ|≥2K aligned = institutional conviction).
+
+**Interaction with grade cap:**
+- A clean Setup 2 pro-HTF with perfect checklist BUT contra-δ massive → would be A+ → capped at **B** (0.25% equity)
+- A Setup 1 aligned with contra-δ massive → would be A → capped at **B**
+- A NEUTRAL-HTF setup (already C per tiebreaker) + contra-δ massive → stays C (can't go below C)
+
+**Supersedes** the prior rule that auto-skipped massive contra-delta setups. That earlier rule was too aggressive. Reason for original rule: attention budget during Recon Live Opus mode. With Haiku speed-up that constraint is gone.
 
 **How to apply:**
-- When bar_read.py summary shows `warn=[...delta_contradicting_choch...]` and `|delta_value| ≥ 2000`, respond with a single short line "skip: massive contra-delta" and move on.
-- The full stop-and-analyze path is reserved for setups with aligned or neutral delta (i.e., where the delta is quality-confirming or at worst neutral).
-- Threshold is 2K based on strategy doc's "|delta| ≥ 2K = massive institutional conviction" language. Below 2K contradictions still degrade grade but are not auto-skips — they get normal analysis with grade cap applied.
-- This is my operational heuristic to protect attention budget; the underlying strategy rule (contradicting delta degrades grade) is unchanged.
+- Detector emits setup with grade field. If massive contra-δ applies, grade assignment logic: `grade = min(otherwise_grade, "B")`.
+- Fire pipeline sizing uses grade as usual → B cap 0.25%.
+- Do NOT short-circuit analysis. Run full sweep + target validation regardless of delta.
+
+**Retroactive impact on existing REQs:**
+- `DET-04` changes from "|δ|≥2K contradicting → skip" to "|δ|≥2K contradicting → grade capped at B, setup still evaluated".

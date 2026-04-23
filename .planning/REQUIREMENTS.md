@@ -7,7 +7,7 @@
 - [ ] **DET-01**: Detector classifies setup as S1 Continuation or S2 Reversal pro-HTF based on LTF band state **at the moment of sweep** (not at the current bar)
 - [ ] **DET-02**: Detector verifies a real liquidity sweep occurred — a bar pierced a prior swing high/low or TBL (Time Cycles box) level and then closed back inside
 - [ ] **DET-03**: Detector selects the most recent CHoCH by **bar position**, not by label-list order, to avoid picking stale CHoCHs
-- [ ] **DET-04**: Detector auto-skips setups with |δ| ≥ 2,000 contradicting the proposed trade direction (massive contra-delta rule)
+- [ ] **DET-04**: Detector caps grade at **B maximum** when |δ| ≥ 2,000 contradicts the proposed trade direction. Setup is NOT skipped — it is evaluated fully and fires if all other structural conditions pass, but at the B-cap 0.25% equity (supersedes prior auto-skip rule)
 - [ ] **DET-05**: Detector emits structured output with setup type, direction, entry, SL candidate, sweep evidence (vela + pierced level), delta, and skip reasons when applicable
 - [ ] **DET-06**: Detector handles NEUTRAL HTF (2-2 vote) by reading the Weekly AVWAP direction as tiebreaker — only setups aligned with Weekly direction are permitted, and all NEUTRAL-HTF setups are forcibly graded C (capped at 0.20%) regardless of other quality factors
 

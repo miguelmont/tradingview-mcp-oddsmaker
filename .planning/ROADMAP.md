@@ -25,7 +25,7 @@
 1. Given 2026-01-23 09:42 NY chart state, detector emits `🎯S2_REVERSAL_PRO LONG` (not `⚠S1 SKIP[sweep_out_of_band]` as v1 did)
 2. Given 2026-04-23 08:56 CT chart state (bull CHoCH @26,985, δ-43, no prior swing piercing), detector emits `⚠ SKIP[no_sweep]` (not a spurious S1 fire)
 3. When an older CHoCH label still appears in BB history but a newer CHoCH has formed at a later bar, detector uses the newer one
-4. When |δ| ≥ 2,000 contradicting trade direction, detector emits `⚠ SKIP[massive_contra_delta]` in one line without deep analysis
+4. When |δ| ≥ 2,000 contradicting trade direction, detector caps grade at B (not skip) and still evaluates the full structural checklist; setup fires at B-cap if other criteria pass
 5. When HTF is 2-2 NEUTRAL, detector reads Weekly AVWAP direction and only permits setups on that side, forcibly graded C (0.20% cap)
 6. Unit tests cover S1/S2/skip/neutral-tiebreaker branches with at least 12 historical fixture cases
 
