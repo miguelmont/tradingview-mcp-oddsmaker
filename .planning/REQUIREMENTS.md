@@ -9,6 +9,7 @@
 - [ ] **DET-03**: Detector selects the most recent CHoCH by **bar position**, not by label-list order, to avoid picking stale CHoCHs
 - [ ] **DET-04**: Detector auto-skips setups with |δ| ≥ 2,000 contradicting the proposed trade direction (massive contra-delta rule)
 - [ ] **DET-05**: Detector emits structured output with setup type, direction, entry, SL candidate, sweep evidence (vela + pierced level), delta, and skip reasons when applicable
+- [ ] **DET-06**: Detector handles NEUTRAL HTF (2-2 vote) by reading the Weekly AVWAP direction as tiebreaker — only setups aligned with Weekly direction are permitted, and all NEUTRAL-HTF setups are forcibly graded C (capped at 0.20%) regardless of other quality factors
 
 ### Target Selector (TGT)
 
@@ -25,6 +26,7 @@
 - [ ] **FIRE-04**: Fire pipeline draws Entry/SL/T1/T2/T3 horizontal lines on chart via MCP `draw_shape` directly (no dependence on external shell scripts that hit sandbox permission issues)
 - [ ] **FIRE-05**: Fire pipeline logs every fire to SQLite (trades table) and JSONL (`logs/recon_live.jsonl`) atomically, and writes `.active_trade.json` for live-monitor state
 - [ ] **FIRE-06**: Fire pipeline sends formatted Telegram notification at fire, at each partial fill (T1/T2/T3), and at final close
+- [ ] **FIRE-07**: Grade assignment ignores RR_T1 magnitude — RR is a validity filter only (RR < 1 → skip) and a reporting value; it does NOT modify grade quality. A clean S2 with RR 1.2 is still A+ if structure + delta + checklist are 100%
 
 ### Backtest (BACK)
 
@@ -49,6 +51,7 @@
 
 - [ ] **STRAT-01**: `docs/my-strategy.md` reflects all rules currently active in `docs/strategy-memory/*.md` (cross-checked)
 - [ ] **STRAT-02**: Whenever a new feedback memo is added, the strategy doc is updated in the same commit or immediately after
+- [ ] **STRAT-03**: New user feedback triggers full propagation: memo → MEMORY.md → docs/strategy-memory → my-strategy.md → REQUIREMENTS.md → ROADMAP.md → active PLAN.md → STATE.md, all in the same or immediately-following commit (per `feedback_update_all_on_new_feedback.md`)
 
 ## Future Requirements (deferred to v3+)
 
@@ -71,12 +74,12 @@
 
 | REQ-ID | Phase | Plan | Status |
 |---|---|---|---|
-| DET-01..05 | Phase 1 | 01-01-PLAN.md | pending |
+| DET-01..06 | Phase 1 | 01-01-PLAN.md | pending |
 | TGT-01..04 | Phase 2 | 02-01-PLAN.md | pending |
-| FIRE-01..06 | Phase 3 | 03-01-PLAN.md | pending |
+| FIRE-01..07 | Phase 3 | 03-01-PLAN.md | pending |
 | BACK-01..05 | Phase 4 | 04-01-PLAN.md | pending |
 | LIVE-01..08 | Phase 5 | 05-01-PLAN.md | pending |
-| STRAT-01..02 | Phase 6 | 06-01-PLAN.md | pending |
+| STRAT-01..03 | Phase 6 | 06-01-PLAN.md | pending |
 
 ---
 

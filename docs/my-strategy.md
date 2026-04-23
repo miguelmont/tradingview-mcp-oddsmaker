@@ -5,6 +5,8 @@
 
 > **Active setups**: **S1 Continuation** and **S2 NY Reversal pro-HTF** only. **S3 Reversal contra-HTF is DISABLED** (2026-04-22 directive) — see [Setup 3](#setup-3--ny-reversal-contra-htf-disabled).
 
+> **Feedback propagation policy (2026-04-23)**: Whenever a new user directive/rule lands, it is propagated **in the same or immediately-following commit** to: the feedback memo, `MEMORY.md`, `docs/strategy-memory/`, this file (`my-strategy.md`), `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, any active PLAN.md, and `.planning/STATE.md`. Partial updates lead to code built against stale rules. See `docs/strategy-memory/feedback_update_all_on_new_feedback.md` for the 9-step checklist.
+
 ## Physical layout
 
 Single chart with **2h layout** (2 horizontal panes):
@@ -51,14 +53,14 @@ NEUTRAL   ⟺  no 3-majority (2-2 ties, 2-1-1 splits, etc.)
 
 **NEUTRAL bias — Weekly VWAP tiebreaker for low-probability Grade C trades:**
 
-When HTF is NEUTRAL (typically 2-2 with Weekly/Monthly on one side and CHoCH/Delta on the other), we do NOT abstain completely. Instead, we adopt the **Weekly VWAP direction** as the permitted trade direction, but treat every setup as **Grade C** (low-probability, capped 0.10% equity size or skip).
+When HTF is NEUTRAL (typically 2-2 with Weekly/Monthly on one side and CHoCH/Delta on the other), we do NOT abstain completely. Instead, we adopt the **Weekly VWAP direction** as the permitted trade direction, but treat every setup as **Grade C** (low-probability, capped **0.20%** equity size or skip).
 
 - Price > Weekly AVWAP → only LONG setups allowed, cap C.
 - Price < Weekly AVWAP → only SHORT setups allowed, cap C.
 - Setups against the Weekly direction in NEUTRAL bias: **skipped entirely**.
 - All structural requirements of S1/S2/S3 still apply; the C-grade cap just reflects the lower edge.
 
-**Example (2026-01-05)**: HTF = Weekly+1 · Monthly+1 · CHoCH-1 · Delta-1 → 2-2 NEUTRAL. Weekly direction bullish. Only LONGs taken, Grade C, size 0.10%.
+**Example (2026-01-05)**: HTF = Weekly+1 · Monthly+1 · CHoCH-1 · Delta-1 → 2-2 NEUTRAL. Weekly direction bullish. Only LONGs taken, Grade C, size **0.20%**.
 
 **Examples**:
 - Price > W (+1) · Price > M (+1) · BB CHoCH bearish (-1) · delta +109K (+1) → **3-1 BULLISH**
@@ -229,7 +231,7 @@ Authoritative trade P&L is the **sum of partial-fill P&L per leg**, computed as 
 | **A+** | Setup 2 (Reversal pro-HTF) with 100% checklist + defined HTF bias + strong Big Beluga delta aligned | **0.75%** |
 | **A** | Setup 1 (Continuation) with 100% checklist · or Setup 2 without strong delta | **0.50%** |
 | **B** | Any setup with 1 warning (LTF outside ideal band, weak delta, non-optimal timing) | **0.25%** |
-| **C** | Setup on NEUTRAL bias · or 2+ warnings | **0.10%** or skip |
+| **C** | Setup on NEUTRAL bias · or 2+ warnings | **0.20%** or skip |
 
 > Setup 3's former "max B" cap is moot — S3 is disabled.
 

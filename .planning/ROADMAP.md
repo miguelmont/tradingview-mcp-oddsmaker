@@ -1,15 +1,15 @@
 # ROADMAP — v2.0 Recon System Rebuild
 
-**6 phases** | **30 requirements mapped** | All covered ✓
+**6 phases** | **32 requirements mapped** | All covered ✓
 
 | # | Phase | Goal | Requirements | Criteria |
 |---|---|---|---|---|
-| 1 | Detector v2 | Correct S1/S2 classifier with real sweep verification | DET-01..05 | 5 |
+| 1 | Detector v2 | Correct S1/S2 classifier with real sweep verification + NEUTRAL tiebreaker | DET-01..06 | 6 |
 | 2 | Target Selector | Intact-target validator with multi-source confluence | TGT-01..04 | 4 |
-| 3 | Fire Pipeline | Limit-order exits, BE trail, SL floor, atomic draw | FIRE-01..06 | 6 |
+| 3 | Fire Pipeline | Limit-order exits, BE trail, SL floor, atomic draw, grade independent of RR | FIRE-01..07 | 7 |
 | 4 | Backtest v2 | Integration + SQLite + MD report + validation | BACK-01..05 | 5 |
 | 5 | Recon Live Harness | 1s poll, 1h HTF cache, filters, news-pause, circuit breaker | LIVE-01..08 | 6 |
-| 6 | Strategy Maintenance | Sync `docs/my-strategy.md` with memos | STRAT-01..02 | 2 |
+| 6 | Strategy Maintenance | Sync `my-strategy.md` with memos + feedback propagation discipline | STRAT-01..03 | 3 |
 
 ---
 
@@ -19,14 +19,15 @@
 
 **Goal:** Rebuild the setup detector with correct S1 Continuation vs S2 Reversal pro-HTF classification, real liquidity sweep verification, and bar-position CHoCH selection.
 
-**Requirements:** DET-01, DET-02, DET-03, DET-04, DET-05
+**Requirements:** DET-01, DET-02, DET-03, DET-04, DET-05, DET-06
 
 **Success criteria:**
 1. Given 2026-01-23 09:42 NY chart state, detector emits `🎯S2_REVERSAL_PRO LONG` (not `⚠S1 SKIP[sweep_out_of_band]` as v1 did)
 2. Given 2026-04-23 08:56 CT chart state (bull CHoCH @26,985, δ-43, no prior swing piercing), detector emits `⚠ SKIP[no_sweep]` (not a spurious S1 fire)
 3. When an older CHoCH label still appears in BB history but a newer CHoCH has formed at a later bar, detector uses the newer one
 4. When |δ| ≥ 2,000 contradicting trade direction, detector emits `⚠ SKIP[massive_contra_delta]` in one line without deep analysis
-5. Unit tests cover S1/S2/skip branches with at least 10 historical fixture cases
+5. When HTF is 2-2 NEUTRAL, detector reads Weekly AVWAP direction and only permits setups on that side, forcibly graded C (0.20% cap)
+6. Unit tests cover S1/S2/skip/neutral-tiebreaker branches with at least 12 historical fixture cases
 
 ### Phase 2: Target Selector
 
@@ -44,7 +45,7 @@
 
 **Goal:** Atomic fire execution with limit-order partial exits, BE runner trail, SL floor enforcement, chart drawing via MCP (no shell sandbox dependence), and full logging.
 
-**Requirements:** FIRE-01, FIRE-02, FIRE-03, FIRE-04, FIRE-05, FIRE-06
+**Requirements:** FIRE-01, FIRE-02, FIRE-03, FIRE-04, FIRE-05, FIRE-06, FIRE-07
 
 **Success criteria:**
 1. Firing a T1+T2 trade where price hits T1 produces a 50% partial fill at exactly T1 price and arms BE stop on the runner
@@ -53,6 +54,7 @@
 4. Fire draws 5 black lines via MCP `draw_shape` without shelling out
 5. Every fire produces a row in SQLite `trades` table and a line in `logs/recon_live.jsonl`, plus a Telegram message delivered
 6. `.active_trade.json` is written atomically (temp file + rename) to prevent partial-read races
+7. Grade is assigned purely from structural factors (setup type, HTF alignment, delta, warnings) — a setup's RR value never promotes or demotes its grade
 
 ### Phase 4: Backtest v2
 
@@ -83,13 +85,14 @@
 
 ### Phase 6: Strategy Maintenance
 
-**Goal:** Keep `docs/my-strategy.md` in sync with the 20 feedback memos in `docs/strategy-memory/`, ensuring canonical strategy spec always reflects current active rules.
+**Goal:** Keep `docs/my-strategy.md` in sync with the feedback memos in `docs/strategy-memory/`, and enforce the propagation discipline (new feedback → update everywhere in one commit).
 
-**Requirements:** STRAT-01, STRAT-02
+**Requirements:** STRAT-01, STRAT-02, STRAT-03
 
 **Success criteria:**
 1. Diff between `docs/my-strategy.md` and `docs/strategy-memory/*.md` shows zero contradictions
 2. A small helper script validates that every active rule in memos is reflected in strategy doc
+3. A propagation-check script flags any commit that adds/modifies a memo without correspondingly updating REQUIREMENTS.md, ROADMAP.md, and my-strategy.md
 
 ---
 
