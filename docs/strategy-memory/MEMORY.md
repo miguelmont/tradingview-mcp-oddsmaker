@@ -1,0 +1,19 @@
+- [Sweep-inside-band: Setup 1 only](feedback_sweep_inside_band.md) — sweep |SD|≤1.0 rule ONLY for Setup 1 Continuation. Setups 2/3 (NY Reversal) require overext → sweep_out_of_band is expected, NOT a blocker.
+- [Never auto-commit](feedback_no_auto_commit.md) — user commits manually. Don't run git commit/push/add -A on their behalf.
+- [Auto-skip massive contra-delta](feedback_massive_contra_delta_skip.md) — in Recon Live/Backtesting, |delta|≥2K + contradicting direction → one-line skip, don't pause for full analysis.
+- [Stop immediately on setup candidate](feedback_stop_immediately_on_candidate.md) — when `🎯` tag appears, first action = `pkill -f recon_tick.sh` (not TaskStop). Analysis must finish in <1 min.
+- [RR does not affect grade](feedback_rr_not_grade_factor.md) — RR_T1 is filter (≥1) + reporting only; it does not degrade grade quality.
+- [Manual backtest stepping](feedback_manual_backtest_stepping.md) — Recon Backtesting advances via manual `bash scripts/recon_tick.sh` batches, NO background Monitor loop.
+- [Intact swings + confluence targets](feedback_intact_swings_targets.md) — T1/T2/T3 must be intact (not liquidated) swings with adequate spacing, ideally confluent with Time Cycles boxes / Sessions / PDH-PDL.
+- [No lunch entries 11:00–13:00 NY](feedback_no_lunch_entries.md) — chop filter: all setups in this window emit ⚠ with lunch_hour skip, no fire.
+- [Daily loss circuit breaker](feedback_daily_loss_circuit_breaker.md) — 3 consecutive SL hits in one day → stop firing rest of session.
+- [NEUTRAL HTF weekly tiebreaker](feedback_neutral_htf_weekly_tiebreaker.md) — HTF 2-2 NEUTRAL → use Weekly VWAP direction, trades cap Grade C only.
+- [Setup 3 disabled](feedback_s3_disabled.md) — no detect/fire S3_REVERSAL_CONTRA for now; only S1 and S2 active.
+- [Limit-order exits model](feedback_limit_order_exits.md) — targets = limit orders, fill instantly on intrabar touch. Partial fills + BE trail after T1.
+- [SL floor 10pt minimum](feedback_sl_floor_needed.md) — 0.5pt margen sobre CHoCH circle se come en re-test. Piso mínimo ~10pt o 1×ATR(1m), o skip.
+- [Clear lines at end of session](feedback_clear_lines_eod.md) — al [SESSION CLOSE] ejecutar draw_clear para borrar Entry/SL/T1/T2/T3 del día. No acumular líneas entre sesiones.
+- [Grade C cap 0.20%](feedback_c_cap_020.md) — NEUTRAL HTF + 2-warning setups ahora 0.20% (antes 0.10%). Necesario para que quepa 1 contrato con SL 50-80pt en equity $50k.
+- [Recon Live cadence 1s/1h](feedback_recon_live_cadence.md) — LTF poll cada 1s (fire inmediato cuando setup aparece); HTF refresh solo cada 1h (no cada vela).
+- [Sweep + intact-target validation](feedback_sweep_and_target_validation.md) — S1 requiere sweep REAL de swing prior/TBL (no solo CHoCH). T1/T2/T3 deben ser INTACT (nunca tocados esta sesión). Swept highs/lows no son targets.
+- [News pause: red only](feedback_news_pause_red_only.md) — solo red folder (High impact) USD news requiere pause (~3min antes, ~5-10min después). Orange folder NO requiere pause.
+- [Volatility is fuel / LRLR](feedback_volatility_is_fuel.md) — la volatilidad (news, ranges overnight) es DESEADA: produce Low Resistance Liquidity Runs que llevan trades a T1 rápido. No pause ni rojo ni naranja por default. Post-news CHoCHs son prime candidates.

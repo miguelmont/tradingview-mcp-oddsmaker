@@ -7,3 +7,5 @@ tradingview-mcp/
 __pycache__/
 *.pyc
 /tmp/
+.htf_cache.json
+logs/
